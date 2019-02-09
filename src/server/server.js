@@ -8,11 +8,12 @@ const logger = morgan("combined");
 
 const startServer = port => {
   const server = http.createServer((req, res) => {
+    const parsedUrl = url.parse(req.url);
+    const func = router[parsedUrl.pathname] || router.default;
 
-    const parsedUrl = url.parse(req.url)
+    logger(req, res, () => func(req, res));
+  });
+  server.listen(port);
+};
 
-    console.log(parsedUrl)
-  })
-}
-
-module.exports = startServer
+module.exports = startServer;
