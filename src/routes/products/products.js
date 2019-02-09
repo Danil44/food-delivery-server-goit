@@ -1,4 +1,4 @@
-const allProducts = require("./src/db/products/all-products.json");
+const allProducts = require("../../db/products/all-products.json");
 
 const productsRoute = (req, res) => {
   res.writeHead(200, { "Content-Type": "application/json" });
