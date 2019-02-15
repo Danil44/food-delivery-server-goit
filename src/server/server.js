@@ -1,19 +1,32 @@
-const http = require("http");
-const url = require("url");
+"use strict";
 
 const morgan = require("morgan");
 const router = require("../routes/router");
+const bodyParser = require("body-parser");
 
-const logger = morgan("combined");
+const express = require("express");
+const app = express();
+
+// const options = {
+//   key: fs.readFileSync(path.resolve("src/ssl/server.key")),
+//   cert: fs.readFileSync(path.resolve("src/ssl/server.crt")),
+//   csr: fs.readFileSync(path.resolve('src/ssl/server.csr'))
+// };
+
+const errorHandler = (req, res, next) => {
+  res.status(500).send("No such page");
+  next();
+};
 
 const startServer = port => {
-  const server = http.createServer((req, res) => {
-    const parsedUrl = url.parse(req.url);
-    const func = router[parsedUrl.pathname] || router.default;
+  app
+    .use(bodyParser.urlencoded({ extended: false }))
+    .use(bodyParser.json())
+    .use(morgan("dev"))
+    .use("/", router)
+    .use(errorHandler);
 
-    logger(req, res, () => func(req, res));
-  });
-  server.listen(port);
+  app.listen(port);
 };
 
 module.exports = startServer;

@@ -1,9 +1,27 @@
 const allProducts = require("../../db/products/all-products.json");
 
-const productsRoute = (req, res) => {
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.write(JSON.stringify(allProducts));
-  res.end();
+const getProductFromDb = id => {
+  return allProducts.filter(product => product.id === +id);
 };
 
-module.exports = productsRoute;
+const getProduct = (req, res) => {
+  let status;
+  let products;
+  if (req.query) {
+    debugger;
+
+    paramsArr = query[key].replace(/['"]+/g, "").split(",");
+  }
+
+  const id = req.params.id;
+  products = getProductFromDb(id);
+
+  if (products.length < 1) status = "no products";
+
+  res.set("Content-Type", "application/json");
+  res.status(200);
+  res.json({ status: status, product: products });
+};
+
+module.exports = getProduct;
+//

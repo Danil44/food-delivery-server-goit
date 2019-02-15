@@ -1,11 +1,13 @@
+const express = require("express");
 const mainRoute = require("./main/main");
-const productsRoute = require("./products/products");
+const getProduct = require("./products/products");
 const signupRoute = require("./sign-up/signup");
 
-const routes = {
-  "/products": productsRoute,
-  "/signup": signupRoute,
-  default: mainRoute
-};
+const apiRoutes = express.Router();
 
-module.exports = routes;
+apiRoutes
+  .get("/", mainRoute)
+  .get("/products/:id", getProduct)
+  .get("/products/", getProduct);
+
+module.exports = apiRoutes;
