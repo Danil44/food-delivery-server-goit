@@ -1,19 +1,30 @@
 const allProducts = require("../../db/products/all-products.json");
 
-const getProductFromDb = id => {
-  return allProducts.filter(product => product.id === +id);
+const getProductFromDb = ids => {
+  return allProducts.filter(product => {
+    return ids.find(id => product.id === +id);
+  });
+};
+
+const getQueryKey = query => {
+  for (let key in query) {
+    return key;
+  }
 };
 
 const getProduct = (req, res) => {
   let status;
   let products;
-  if (req.query) {
-    debugger;
 
+  const queryObj = Object.entries(req.query);
+
+  if (queryObj.length !== 0) {
+    const query = req.query;
+    const key = getQueryKey(query);
     paramsArr = query[key].replace(/['"]+/g, "").split(",");
   }
 
-  const id = req.params.id;
+  const id = req.params.id.split(",");
   products = getProductFromDb(id);
 
   if (products.length < 1) status = "no products";
@@ -24,4 +35,3 @@ const getProduct = (req, res) => {
 };
 
 module.exports = getProduct;
-//
