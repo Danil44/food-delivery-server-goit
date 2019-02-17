@@ -38,19 +38,17 @@ const getProduct = (req, res) => {
     const query = url.parse(req.url, true).query;
     const key = getQueryKey(query);
     paramsArr = query[key].replace(/['"]+/g, "").split(",");
-
+    debugger;
     if (key === "ids") {
       products = getProductById(paramsArr);
     }
     if (key === "categories") {
       products = getProductByCategory(paramsArr);
     }
+  } else {
+    const id = getId(parsedUrl.pathname).split(",");
+    products = getProductById(id);
   }
-  debugger;
-
-  const id = getId(parsedUrl.pathname).split(",");
-
-  products = getProductById(id);
 
   if (products.length < 1) status = "no products";
 
