@@ -7,27 +7,23 @@ const saveOrderToDb = orderData => {
   dataStr = JSON.stringify(orderData);
   debugger;
 
-  try {
-    if (!fs.existsSync("src/db/users/orders")) {
-      fs.mkdir("src/db/users/orders", err => {
-        if (err) console.log(err);
-      });
-    }
-    const src = path.resolve(
-      __dirname,
-      "../../",
-      "db/users/orders",
-      "orders.json"
-    );
-
-    fs.writeFile(src, dataStr, err => {
-      if (err) {
-        console.log(err);
-      }
+  if (!fs.existsSync("src/db/users/orders")) {
+    fs.mkdir("src/db/users/orders", err => {
+      if (err) console.log(err);
     });
-  } catch (err) {
-    console.log(err);
   }
+  const src = path.resolve(
+    __dirname,
+    "../../",
+    "db/users/orders",
+    "orders.json"
+  );
+
+  fs.writeFile(src, dataStr, err => {
+    if (err) {
+      console.log(err);
+    }
+  });
 };
 
 const getProductsFromDb = products => {
