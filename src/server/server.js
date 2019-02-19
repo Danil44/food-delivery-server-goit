@@ -18,12 +18,6 @@ const errorHandler = (req, res, next) => {
   next();
 };
 
-const options = {
-  key: fs.readFileSync(path.resolve("src/ssl/server.key")),
-  cert: fs.readFileSync(path.resolve("src/ssl/server.crt")),
-  csr: fs.readFileSync(path.resolve('src/ssl/server.csr'))
-};
-
 const startServer = port => {
   app
     .use(bodyParser.urlencoded({ extended: false }))
