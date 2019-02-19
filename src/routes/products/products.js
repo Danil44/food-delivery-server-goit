@@ -1,26 +1,9 @@
 const allProducts = require("../../db/products/all-products.json");
-const url = require("url");
 
-const getProductById = ids => {
+const getProductFromDb = ids => {
   return allProducts.filter(product => {
     return ids.find(id => product.id === +id);
   });
-};
-
-const getProductByCategory = categories => {
-  return allProducts.filter(product => {
-    return categories.find(categoryReq => {
-      return product.categories.find(category => categoryReq === category);
-    });
-  });
-};
-
-const getId = url => {
-  const lastIndex = url.lastIndexOf("/");
-
-  if (lastIndex !== -1) {
-    return url.slice(lastIndex + 1);
-  }
 };
 
 const getQueryKey = query => {
@@ -32,32 +15,25 @@ const getQueryKey = query => {
 const getProduct = (req, res) => {
   let status = "success";
   let products = [];
-  const parsedUrl = url.parse(req.url);
+  let params = [];
 
-  if (parsedUrl.query) {
-    const query = url.parse(req.url, true).query;
+  const queryObj = Object.entries(req.query);
+  
+  if (queryObj.length !== 0) {
+    const query = req.query;
     const key = getQueryKey(query);
-    paramsArr = query[key].replace(/['"]+/g, "").split(",");
-
-    if (key === "ids") {
-      products = getProductById(paramsArr);
-    }
-    if (key === "categories") {
-      products = getProductByCategory(paramsArr);
-    }
+    params = query[key].replace(/['"]+/g, "").split(",");
+  } else {
+    params = req.params.id.split(",");
   }
-  debugger;
 
-  const id = getId(parsedUrl.pathname).split(",");
-
-  products = getProductById(id);
+  products = getProductFromDb(params);
 
   if (products.length < 1) status = "no products";
 
-  res.writeHead(200, { "Content-Type": "application/json" });
-  res.write(JSON.stringify({ status: `${status}`, product: products }));
-  res.end();
+  res.set("Content-Type", "application/json");
+  res.status(200);
+  res.json({ status: status, product: products });
 };
 
 module.exports = getProduct;
-//

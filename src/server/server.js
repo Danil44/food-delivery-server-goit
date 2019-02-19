@@ -1,11 +1,22 @@
-const https = require("https");
-const url = require("url");
-const fs = require("fs");
+"use strict";
+
 const morgan = require("morgan");
 const router = require("../routes/router");
-const getRouteHandler = require("../helpers/get-route-handler");
+const bodyParser = require("body-parser");
 
-const logger = morgan("combined");
+const express = require("express");
+const app = express();
+
+// const options = {
+//   key: fs.readFileSync(path.resolve("src/ssl/server.key")),
+//   cert: fs.readFileSync(path.resolve("src/ssl/server.crt")),
+//   csr: fs.readFileSync(path.resolve('src/ssl/server.csr'))
+// };
+
+const errorHandler = (req, res, next) => {
+  res.status(500).send("No such page");
+  next();
+};
 
 const options = {
   key: fs.readFileSync(path.resolve("src/ssl/server.key")),
@@ -14,13 +25,15 @@ const options = {
 };
 
 const startServer = port => {
-  const server = https.createServer(options, (req, res) => {
-    const parsedUrl = url.parse(req.url);
-    const func = getRouteHandler(router, parsedUrl.pathname, parsedUrl.query) || router.default;
+  app
+    .use(bodyParser.urlencoded({ extended: false }))
+    .use(bodyParser.json())
+    .use(morgan("dev"))
+    .use("/", router)
+    .use(errorHandler);
 
-    logger(req, res, () => func(req, res));
-  });
-  server.listen(port);
+
+  app.listen(port);
 };
 
 module.exports = startServer;
