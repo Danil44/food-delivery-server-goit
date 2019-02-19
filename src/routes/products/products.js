@@ -13,19 +13,21 @@ const getQueryKey = query => {
 };
 
 const getProduct = (req, res) => {
-  let status;
-  let products;
+  let status = "success";
+  let products = [];
+  let params = [];
 
   const queryObj = Object.entries(req.query);
-
+  
   if (queryObj.length !== 0) {
     const query = req.query;
     const key = getQueryKey(query);
-    paramsArr = query[key].replace(/['"]+/g, "").split(",");
+    params = query[key].replace(/['"]+/g, "").split(",");
+  } else {
+    params = req.params.id.split(",");
   }
 
-  const id = req.params.id.split(",");
-  products = getProductFromDb(id);
+  products = getProductFromDb(params);
 
   if (products.length < 1) status = "no products";
 

@@ -5,6 +5,7 @@ const getUserById = id => {
 };
 
 const getUser = (req, res) => {
+  debugger;
   let status = "success";
   const id = req.params.id;
   const user = getUserById(id);

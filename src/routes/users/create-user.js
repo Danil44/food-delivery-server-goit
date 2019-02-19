@@ -4,26 +4,24 @@ const uuidv4 = require("uuid/v4");
 const util = require("util");
 const allUsers = path.join(__dirname, "../../", "db/users/", "all-users.json");
 
-const readFile = util.promisify(fs.readFile);
+const readFileAsync = util.promisify(fs.readFile);
+const writeFileAsync = util.promisify(fs.writeFile);
 
 const saveNewUser = userData => {
   let obj = {};
 
   let json = JSON.stringify(obj);
 
-  return readFile(allUsers, "utf8", function readFileCallback(err, data) {
-    if (err) {
+  return readFileAsync(allUsers, "utf8")
+    .then(data => {
+      obj = JSON.parse(data);
+      obj.push(userData);
+      json = JSON.stringify(obj);
+      writeFileAsync(allUsers, json, "utf8");
+    })
+    .catch(err => {
       console.log(err);
-    }
-    obj = JSON.parse(data);
-    obj.push(userData);
-    json = JSON.stringify(obj);
-    fs.writeFile(allUsers, json, "utf8", err => {
-      if (err) {
-        console.log(err);
-      }
     });
-  });
 };
 
 const createNewUser = (req, res) => {
