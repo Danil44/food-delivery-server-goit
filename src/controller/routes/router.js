@@ -5,6 +5,7 @@ const getAllProducts = require("../product/get-all-products");
 const getProductById = require("../product/get-product-by-id");
 const updateProduct = require("../product/update-product");
 const validateEmail = require("../user/validate-email");
+const addIngredients = require("../../domain/product/add-ingredients");
 
 const createUser = require("../user/create-user");
 const getUser = require("../user/get-user");
@@ -16,6 +17,9 @@ const verifyToken = require("../authentication/verify-token");
 
 const createOrder = require("../order/create-order");
 const getOrder = require("../order/get-order");
+
+const getComment = require("../comment/get-comment");
+const createComment = require("../comment/create-comment");
 
 const addImage = require("./image/add-image");
 
@@ -31,6 +35,9 @@ apiRoutes
   .get("/products/:id", getProductById)
   .get("/products", getAllProducts)
   .put("/products/:id", updateProduct)
+
+  .get("/comments", getComment)
+  .post("/comments", createComment)
 
   .get("/users/:id", getUser)
   .get("/users", getAllUsers)

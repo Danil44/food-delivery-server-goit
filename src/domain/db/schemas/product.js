@@ -12,7 +12,8 @@ const productSchema = new Schema({
   created: String,
   modified: String,
   likes: Number,
-  categories: Array
+  categories: Array,
+  ingredients: [{ type: Schema.Types.ObjectId, ref: "Ingredient" }]
 });
 
 const Product = mongoose.model("Product", productSchema);
